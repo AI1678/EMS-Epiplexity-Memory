@@ -303,7 +303,10 @@ class EpiplexityMemorySystem:
     def _promote_l1_to_l2(self):
         """将L1内容提升到L2"""
         for memory in self.l1_working:
-            if memory["access_count"] > 0:  # 被访问过的才保留
+            # 保留高重要性或高Epiplexity的记忆，即使未被访问
+            if (memory["access_count"] > 0 or 
+                memory.get("importance", 1.0) > 0.8 or
+                memory.get("epiplexity_score", 0) > 0.5):
                 self._store_l2(memory)
         self.l1_working = []
     
