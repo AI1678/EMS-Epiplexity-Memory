@@ -61,6 +61,9 @@ class EpiplexityMemorySystem:
         
         # 确保存储目录存在
         self._init_storage()
+        
+        # 加载持久化数据
+        self._load_persistent()
     
     def _init_storage(self):
         """初始化存储目录"""
@@ -321,12 +324,34 @@ class EpiplexityMemorySystem:
     def _persist(self):
         """持久化到磁盘"""
         # 保存L2
-        with open(self.storage_path / "l2" / "episodic.json", "w") as f:
+        with open(self.storage_path / "l2" / "episodic.json", "w", encoding='utf-8') as f:
             json.dump(self.l2_episodic, f, ensure_ascii=False, indent=2)
         
         # 保存L3
-        with open(self.storage_path / "l3" / "semantic.json", "w") as f:
+        with open(self.storage_path / "l3" / "semantic.json", "w", encoding='utf-8') as f:
             json.dump(self.l3_semantic, f, ensure_ascii=False, indent=2)
+    
+    def _load_persistent(self):
+        """从磁盘加载持久化数据"""
+        import os
+        
+        # 加载L2
+        l2_path = self.storage_path / "l2" / "episodic.json"
+        if os.path.exists(l2_path):
+            try:
+                with open(l2_path, 'r', encoding='utf-8') as f:
+                    self.l2_episodic = json.load(f)
+            except Exception as e:
+                print(f"加载L2记忆失败: {e}")
+        
+        # 加载L3
+        l3_path = self.storage_path / "l3" / "semantic.json"
+        if os.path.exists(l3_path):
+            try:
+                with open(l3_path, 'r', encoding='utf-8') as f:
+                    self.l3_semantic = json.load(f)
+            except Exception as e:
+                print(f"加载L3记忆失败: {e}")
     
     def _generate_id(self, content: str) -> str:
         """生成唯一ID"""
