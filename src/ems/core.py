@@ -174,7 +174,7 @@ class EpiplexityMemorySystem:
         # L1: 工作记忆（最快）
         for memory in self.l1_working:
             score = self._compute_match_score(query, memory)
-            if score > 0.1:  # 降低阈值以获得更多结果
+            if score > 0.01:  # 极低的阈值确保新记忆也能被检索
                 memory["access_count"] = memory.get("access_count", 0) + 1
                 memory["last_accessed"] = datetime.now().isoformat()
                 memory["match_score"] = score
@@ -184,7 +184,7 @@ class EpiplexityMemorySystem:
         # L2: 情景记忆
         for memory in self.l2_episodic.values():
             score = self._compute_match_score(query, memory)
-            if score > 0.1:
+            if score > 0.01:
                 memory["access_count"] = memory.get("access_count", 0) + 1
                 memory["last_accessed"] = datetime.now().isoformat()
                 memory["match_score"] = score
@@ -194,7 +194,7 @@ class EpiplexityMemorySystem:
         # L3: 语义记忆
         for memory in self.l3_semantic.values():
             score = self._compute_match_score(query, memory)
-            if score > 0.1:
+            if score > 0.01:
                 memory["access_count"] = memory.get("access_count", 0) + 1
                 memory["last_accessed"] = datetime.now().isoformat()
                 memory["match_score"] = score
